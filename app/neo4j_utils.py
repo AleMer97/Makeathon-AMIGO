@@ -10,11 +10,24 @@ class Subject:
     def __repr__(self):
         return f"Subject(subjectId={self.subjectId}, disease={self.disease}, icd10={self.icd10})"
 
+class Phenotypes:
+    def __init__(self, subjectId, phenotypes):
+        self.subjectId = subjectId
+        self.phenotypes = phenotypes
+
+    def __repr__(self):
+        return f"Phenotypes(subjectId={self.subjectId}, phenotypes={self.phenotypes})"
 
 def get_subjects(session):
-    node_count_query = """MATCH (b:Biological_sample)-->(d:Disease)
+    query = """MATCH (b:Biological_sample)-->(d:Disease)
 WITH *, [s in d.synonyms WHERE s STARTS WITH "ICD10CM" | s] as ICD10
 RETURN b.subjectid as subjectId, d.name as disease, ICD10[0] as icd10"""     
-    data = session.run(node_count_query).data()
+    data = session.run(query).data()
     subjects = [Subject(**record) for record in data]
     return subjects
+
+def get_phenotypes(session, subjectId):
+    query = """MATCH (a:Biological_sample {{subjectid:\"""" + subjectId + """\"}})-[:HAS_PHENOTYPE]->(p:Phenotype) 
+RETURN a.subjectid as id, collect(p.id) as name"""
+    data = session.run(query).data()
+    return Phenotypes(**data[0])

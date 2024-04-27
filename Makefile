@@ -50,8 +50,11 @@ fc-build:
 	featurecloud app build ./ $(DOCKER_IMAGE_NAME)-test latest True
 
 fc-test:
-	featurecloud test start --controller-host=http://localhost:8000 --app-image=$(DOCKER_IMAGE_NAME)-test \
-	--query-interval=1 --client-dirs=.,.
+	featurecloud test start --controller-host=http://localhost:8000 --app-image=$(DOCKER_IMAGE_NAME)-test:latest \
+	--query-interval=1 --client-dirs=. --generic-dir=./
+
+fc-push:
+	featurecloud app publish $(DOCKER_IMAGE_NAME)
 
 help: ## This help dialog
 	@IFS=$$'\n' ; \
