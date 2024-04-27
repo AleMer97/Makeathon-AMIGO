@@ -44,8 +44,6 @@ class ExecuteState(AppState):
             logger.info("Fetching data from Neo4j: ...")
             fetcher = DataFetcher(session)
             logger.info("Fetching data from Neo4j: Done")
-                
-            
         
         print("test:" + result.csv())
         write_output(f"{result.csv()}")
