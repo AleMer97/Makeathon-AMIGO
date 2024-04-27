@@ -23,6 +23,8 @@ logger = logging.getLogger(__name__)
 
 config = read_config()
 
+OUTPUT_DIR = '/mnt/output'
+
 @app_state('initial')
 class ExecuteState(AppState):
 
@@ -51,10 +53,15 @@ class ExecuteState(AppState):
             fetcher = DataFetcher(session)
             logger.info("Fetching data from Neo4j: Done")
                 
-        result = randomForest(fetcher.subjects)
+        data = [vars(obj) for obj in fetcher.subjects]
+        df = pd.DataFrame(data)
+        df = df[['subjectId', 'isSick', 'phenotypes']]
+
+        result = randomForest(df)
         
-        print("test:" + result.csv())
-        write_output(f"{result.csv()}")
+        logger.info(f"Results: {df}")
+        #print("test:" + result.csv())
+        result.to_csv(f"{OUTPUT_DIR}/results.csv", index=False)
 
         # Close the driver connection
         driver.close()

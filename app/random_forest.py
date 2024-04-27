@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 """
 df format:
 +------------+-----------------+---------------------+
-| subject_id | has_disease(0/1)| phenotypes (list)   |
+| subjectId  | isSick (0/1)    | phenotypes (list)   |
 +------------+-----------------+---------------------+
 """
 def randomForest(df):
@@ -22,10 +22,10 @@ def randomForest(df):
   df = df.drop('phenotypes', axis=1).join(encoded_phenotypes)
 
   # Convert boolean to int
-  df['has_disease'] = df['has_disease'].astype(int)
+  df['isSick'] = df['isSick'].astype(int)
 
   # Split the data into a training set and a test set
-  X_train, X_test, y_train, y_test = train_test_split(df.drop('has_disease', axis=1), df['has_disease'], test_size=0.1, random_state=42)
+  X_train, X_test, y_train, y_test = train_test_split(df.drop('isSick', axis=1), df['isSick'], test_size=0.1, random_state=42)
 
   # Train a Random Forest classifier
   clf = RandomForestClassifier(n_estimators=100, random_state=42)
@@ -37,9 +37,9 @@ def randomForest(df):
   # Print a classification report
   logger.info(classification_report(y_test, y_pred))
 
-  # Create a DataFrame with subject_id and y_pred
+  # Create a DataFrame with subjectId and y_pred
   results_df = pd.DataFrame({
-    'subject_id': X_test['subject_id'],
+    'subjectId': X_test['subjectId'],
     'y_pred': y_pred
   })
 
