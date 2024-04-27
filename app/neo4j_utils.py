@@ -14,7 +14,7 @@ class Subject:
 def get_subjects(session):
     node_count_query = """MATCH (b:Biological_sample)-->(d:Disease)
 WITH *, [s in d.synonyms WHERE s STARTS WITH "ICD10CM" | s] as ICD10
-RETURN b.subjectid as subjectId, d.name as disease, ICD10[0] as icd10 LIMIT 10"""     
+RETURN b.subjectid as subjectId, d.name as disease, ICD10[0] as icd10"""     
     data = session.run(node_count_query).data()
     subjects = [Subject(**record) for record in data]
     return subjects
