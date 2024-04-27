@@ -28,7 +28,7 @@ class DataFetcher:
     def fetch(self):
         subjects = self.get_subjects(self.session)
         for subject in subjects:
-            subject.phenotypes = self.get_phenotypes(self.session, subject.subjectId)
+            subject.phenotypes = self.get_phenotypes(self.session, subject.subjectId).phenotypes
         return subjects
 
     def get_subjects(self, session):
