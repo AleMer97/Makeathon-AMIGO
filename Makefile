@@ -38,6 +38,9 @@ destroy:
 trigger:
 	curl --location 'http://localhost:9000/setup' --header 'Content-Type: application/json' --data '{"id": "0000000000000000","coordinator": false,"coordinatorID": "0000000000000000","clients": []}'
 
+login:
+	docker login --username foo --password-stdin
+
 help: ## This help dialog
 	@IFS=$$'\n' ; \
 		help_lines=(`fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//'`); \
