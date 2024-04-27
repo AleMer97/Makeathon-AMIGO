@@ -16,3 +16,4 @@ pyyaml==6.0.1
 featurecloud==0.0.29
 # tensorflow
 # tensorflow-gnn
+scikit-learn

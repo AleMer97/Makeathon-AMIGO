@@ -3,10 +3,16 @@ import time
 import os
 import logging
 from data_fetcher import DataFetcher
+from random_forest import randomForest
 
 from neo4j import GraphDatabase, Query, Record
 from neo4j.exceptions import ServiceUnavailable
 from pandas import DataFrame
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+from sklearn.preprocessing import MultiLabelBinarizer
 
 from utils import read_config,write_output,ResultRow,CSVResultsBuilder
 
@@ -44,6 +50,8 @@ class ExecuteState(AppState):
             logger.info("Fetching data from Neo4j: ...")
             fetcher = DataFetcher(session)
             logger.info("Fetching data from Neo4j: Done")
+                
+        result = randomForest(fetcher.subjects)
         
         print("test:" + result.csv())
         write_output(f"{result.csv()}")
