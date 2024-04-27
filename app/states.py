@@ -2,7 +2,7 @@ from FeatureCloud.app.engine.app import AppState, app_state, Role
 import time
 import os
 import logging
-from app.neo4j_utils import get_subjects
+from neo4j_utils import get_subjects
 
 from neo4j import GraphDatabase, Query, Record
 from neo4j.exceptions import ServiceUnavailable
@@ -42,9 +42,6 @@ class ExecuteState(AppState):
                 
             # Get All SubjectIds with respected diseases
             subjects = get_subjects(session)
-
-
-
 
             logger.info(subjects)
             
