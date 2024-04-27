@@ -7,6 +7,7 @@ class Subject:
         self.isControl = disease == "control"
         self.isSick = not self.isControl
         self.icdFirstLetter = self.icd10[0] if self.hasIcd10 else ("CTL" if self.isControl else "NC")
+        self.genes = []
         self.phenotypes = []
 
     def __repr__(self):
@@ -23,13 +24,18 @@ class Phenotypes:
 class DataFetcher:
     def __init__(self, session):
         self.session = session
-        self.subjects = self.fetch()
+        self.fetch()
     
     def fetch(self):
-        subjects = self.get_subjects(self.session)
-        for subject in subjects:
+        self.subjects = self.get_subjects(self.session)
+
+    def fetch_phenotypes(self):
+        for subject in self.subjects:
             subject.phenotypes = self.get_phenotypes(self.session, subject.subjectId).phenotypes
-        return subjects
+    
+    def fetch_genes(self):
+        for subject in self.subjects:
+            subject.genes = self.get_phenotypes(self.session, subject.subjectId).phenotypes
 
     def get_subjects(self, session):
         query = """MATCH (b:Biological_sample)-->(d:Disease)
@@ -40,6 +46,14 @@ class DataFetcher:
         return subjects
 
     def get_phenotypes(self, session, subjectId):
+        query = """MATCH (a:Biological_sample {subjectid:\"""" + subjectId + """\"})-[:HAS_PHENOTYPE]->(p:Phenotype) 
+    RETURN a.subjectid as subjectId, collect(p.id) as phenotypes"""
+        data = session.run(query).data()
+        if len(data) == 0:
+            return Phenotypes(subjectId=subjectId, phenotypes=[])
+        return Phenotypes(**data[0])
+    
+    def get_genes(self, session, subjectId):
         query = """MATCH (a:Biological_sample {subjectid:\"""" + subjectId + """\"})-[:HAS_PHENOTYPE]->(p:Phenotype) 
     RETURN a.subjectid as subjectId, collect(p.id) as phenotypes"""
         data = session.run(query).data()

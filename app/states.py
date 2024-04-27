@@ -49,9 +49,13 @@ class ExecuteState(AppState):
         # Create a driver session with defined DB
         with driver.session(database=NEO4J_DB) as session:
             # Result Builder
-            logger.info("Fetching data from Neo4j: ...")
+            logger.info("Fetching subjects from Neo4j: ...")
             fetcher = DataFetcher(session)
-            logger.info("Fetching data from Neo4j: Done")
+            logger.info("Fetching subjects from Neo4j: Done")
+
+            logger.info("Fetching phenotypes from Neo4j: ...")
+            fetcher.fetch_phenotypes()
+            logger.info("Fetching phenotypes from Neo4j: Done")
                 
         data = [vars(obj) for obj in fetcher.subjects]
         df = pd.DataFrame(data)
@@ -60,6 +64,10 @@ class ExecuteState(AppState):
         resultA = randomForestA(df)
         logger.info(f"Results Task A: {resultA}")
         resultA.to_csv(f"{OUTPUT_DIR}/results_task_A.csv", index=False)
+
+        logger.info("Fetching genes from Neo4j: ...")
+        fetcher.fetch_genes()
+        logger.info("Fetching genes from Neo4j: Done")
 
         resultB = randomForestB(df)
         logger.info(f"Results Task B: {resultB}")
