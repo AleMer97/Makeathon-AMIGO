@@ -2,7 +2,7 @@ from FeatureCloud.app.engine.app import AppState, app_state, Role
 import time
 import os
 import logging
-from neo4j_utils import get_subjects
+from data_fetcher import DataFetcher
 
 from neo4j import GraphDatabase, Query, Record
 from neo4j.exceptions import ServiceUnavailable
@@ -34,20 +34,18 @@ class ExecuteState(AppState):
         
         # Driver instantiation
         driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USERNAME, NEO4J_PASSWORD))
-        
-        # Result Builder
+
+        # Result
         result = CSVResultsBuilder()
 
         # Create a driver session with defined DB
         with driver.session(database=NEO4J_DB) as session:
+            # Result Builder
+            logger.info("Fetching data from Neo4j: ...")
+            fetcher = DataFetcher(session)
+            logger.info("Fetching data from Neo4j: Done")
                 
-            # Get All SubjectIds with respected diseases
-            subjects = get_subjects(session)
-            for subject in subjects:
-                # Get Phenotypes for each subject
-                # phenotypes = get_phenotypes(session, subject.subjectId)
-                is_sick = 0 if subject.isControl else 1
-                result.add_row(subject.subjectId, is_sick, subject.icd10)
+            
         
         print("test:" + result.csv())
         write_output(f"{result.csv()}")
