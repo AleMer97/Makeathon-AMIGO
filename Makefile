@@ -28,6 +28,12 @@ rebuild: rmi build ## rebuild it
 run: ## run the image
 	docker run $(DOCKER_IMAGE_NAME):latest
 
+dev: ## run the image in dev mode
+	docker run -d --name amigo -v ./config.yml:/mnt/input/config.yml -v ./data/output:/mnt/output -p 9000:9000 $(DOCKER_IMAGE_NAME):latest
+
+trigger:
+	curl --location 'http://localhost:9000/setup' --header 'Content-Type: application/json' --data '{"id": "0000000000000000","coordinator": false,"coordinatorID": "0000000000000000","clients": []}'
+
 help: ## This help dialog
 	@IFS=$$'\n' ; \
 		help_lines=(`fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//'`); \
