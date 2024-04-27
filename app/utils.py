@@ -61,5 +61,4 @@ class CSVResultsBuilder:
         self.rows.append(ResultRow(subjectId, is_sick, icd10))
 
     def csv(self):
-        df = pd.DataFrame([vars(row) for row in self.rows])
-        return df.to_csv(index=False)
+        return pd.DataFrame([vars(row) for row in self.rows]).to_csv(index=False)

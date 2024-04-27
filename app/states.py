@@ -48,7 +48,8 @@ class ExecuteState(AppState):
                 # phenotypes = get_phenotypes(session, subject.subjectId)
                 is_sick = 0 if subject.isControl else 1
                 result.add_row(subject.subjectId, is_sick, subject.icd10)
-            
+        
+        print("test:" + result.csv())
         write_output(f"{result.csv()}")
 
         # Close the driver connection
