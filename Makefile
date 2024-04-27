@@ -31,6 +31,10 @@ run: ## run the image
 dev: ## run the image in dev mode
 	docker run -d --name amigo -v ./config.yml:/mnt/input/config.yml -v ./data/output:/mnt/output -p 9000:9000 $(DOCKER_IMAGE_NAME):latest
 
+destroy:
+	docker stop amigo
+	docker rm amigo
+
 trigger:
 	curl --location 'http://localhost:9000/setup' --header 'Content-Type: application/json' --data '{"id": "0000000000000000","coordinator": false,"coordinatorID": "0000000000000000","clients": []}'
 
