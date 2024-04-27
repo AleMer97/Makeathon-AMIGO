@@ -6,6 +6,7 @@ class Subject:
         self.icd10 = None if not self.hasIcd10 else icd10.replace("ICD10CM:", "")
         self.icdFirstLetter = None if not self.hasIcd10 else self.icd10[0]
         self.isControl = disease == "control"
+        self.isSick = not self.isControl
         self.phenotypes = []
 
     def __repr__(self):
