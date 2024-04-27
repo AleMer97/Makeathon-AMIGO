@@ -2,7 +2,7 @@ from FeatureCloud.app.engine.app import AppState, app_state, Role
 import time
 import os
 import logging
-from app.neo4j_utils import get_subjectIds
+from app.neo4j_utils import get_subjects
 
 from neo4j import GraphDatabase, Query, Record
 from neo4j.exceptions import ServiceUnavailable
@@ -41,16 +41,15 @@ class ExecuteState(AppState):
         with driver.session(database=NEO4J_DB) as session:
                 
             # Get All SubjectIds with respected diseases
-            subjects : get_subjects(session)
+            subjects = get_subjects(session)
 
 
 
 
-            # Use .data() to access the results array        
-            results = session.run(node_count_query).data()
-            logger.info(results)
             
-        write_output(f"{results}")
+            logger.info(subjects)
+            
+        write_output(f"{subjects}")
 
         # Close the driver connection
         driver.close()
