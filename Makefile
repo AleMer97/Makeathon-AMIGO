@@ -39,7 +39,7 @@ trigger:
 	curl --location 'http://localhost:9000/setup' --header 'Content-Type: application/json' --data '{"id": "0000000000000000","coordinator": false,"coordinatorID": "0000000000000000","clients": []}'
 
 login:
-	docker login --username foo --password-stdin
+	docker login $(REGISTRY)
 
 help: ## This help dialog
 	@IFS=$$'\n' ; \
