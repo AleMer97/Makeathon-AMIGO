@@ -2,6 +2,7 @@ from FeatureCloud.app.engine.app import AppState, app_state, Role
 import time
 import os
 import logging
+from app.neo4j_utils import get_subjectIds
 
 from neo4j import GraphDatabase, Query, Record
 from neo4j.exceptions import ServiceUnavailable
@@ -39,12 +40,12 @@ class ExecuteState(AppState):
         # Create a driver session with defined DB
         with driver.session(database=NEO4J_DB) as session:
                 
-            # Example Query to Count Nodes 
-            node_count_query = """MATCH (b:Biological_sample)-->(d:Disease)
-WITH b,d,any(s in d.synonyms WHERE s STARTS WITH "ICD10CM") as icd10
-RETURN b, d.name, icd10, d.name = "control" as control LIMIT 1000
-"""
-        
+            # Get All SubjectIds with respected diseases
+            subjects : get_subjectIds(session)
+
+
+
+            
             # Use .data() to access the results array        
             results = session.run(node_count_query).data()
             logger.info(results)
