@@ -40,7 +40,7 @@ class DataFetcher:
 
     def get_phenotypes(self, session, subjectId):
         query = """MATCH (a:Biological_sample {subjectid:\"""" + subjectId + """\"})-[:HAS_PHENOTYPE]->(p:Phenotype) 
-    RETURN a.subjectid as id, collect(p.id) as name"""
+    RETURN a.subjectid as subjectId, collect(p.id) as phenotypes"""
         data = session.run(query).data()
         if len(data) == 0:
             return Phenotypes(subjectId=subjectId, phenotypes=[])
