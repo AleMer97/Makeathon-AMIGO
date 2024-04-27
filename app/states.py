@@ -23,9 +23,7 @@ class ExecuteState(AppState):
     def register(self):
         self.register_transition('terminal', Role.BOTH)
 
-        
     def run(self):
-        
         # Get Neo4j credentials from config
         neo4j_credentials = config.get("neo4j_credentials", {})
         NEO4J_URI = neo4j_credentials.get("NEO4J_URI", "")
