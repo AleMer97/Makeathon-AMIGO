@@ -31,6 +31,12 @@ run: ## run the image
 dev: ## run the image in dev mode
 	docker run -d --name amigo -v ./config.yml:/mnt/input/config.yml -v ./data/output:/mnt/output -p 9000:9000 $(DOCKER_IMAGE_NAME):latest
 
+dev-run: ## destroy -> build -> dev
+	make destroy
+	make build
+	make dev
+	
+
 destroy:
 	docker stop amigo
 	docker rm amigo
