@@ -46,3 +46,20 @@ def convert_to_np(data):
 #     y_test = convert_to_np(y_test)
 
 #     return X, y, X_test, y_test
+    
+class ResultRow:
+    def __init__(self, subjectId, is_sick, icd10):
+        self.subjectId = subjectId
+        self.is_sick = is_sick
+        self.icd10 = icd10
+
+class CSVResultsBuilder:
+    def __init__(self):
+        self.rows = []
+
+    def add_row(self, subjectId, is_sick, icd10):
+        self.rows.append(ResultRow(subjectId, is_sick, icd10))
+
+    def csv(self):
+        df = pd.DataFrame([vars(row) for row in self.rows])
+        return df.to_csv(index=False)

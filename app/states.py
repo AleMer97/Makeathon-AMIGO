@@ -8,7 +8,7 @@ from neo4j import GraphDatabase, Query, Record
 from neo4j.exceptions import ServiceUnavailable
 from pandas import DataFrame
 
-from utils import read_config,write_output
+from utils import read_config,write_output,ResultRow,CSVResultsBuilder
 
 from FeatureCloud.app.engine.app import AppState, app_state
 
@@ -35,15 +35,21 @@ class ExecuteState(AppState):
         # Driver instantiation
         driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USERNAME, NEO4J_PASSWORD))
         
+        # Result Builder
+        result = CSVResultsBuilder()
+
         # Create a driver session with defined DB
         with driver.session(database=NEO4J_DB) as session:
                 
             # Get All SubjectIds with respected diseases
             subjects = get_subjects(session)
-
-            logger.info(subjects)
+            for subject in subjects:
+                # Get Phenotypes for each subject
+                # phenotypes = get_phenotypes(session, subject.subjectId)
+                is_sick = 0 if subject.isControl else 1
+                result.add_row(subject.subjectId, is_sick, subject.icd10)
             
-        write_output(f"{subjects}")
+        write_output(f"{result.csv()}")
 
         # Close the driver connection
         driver.close()
