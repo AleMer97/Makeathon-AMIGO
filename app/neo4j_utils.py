@@ -2,13 +2,14 @@ class Subject:
     def __init__(self, subjectId, disease, icd10):
         self.subjectId = subjectId
         self.disease = disease
-        self.icd10 = None if icd10 == None else icd10.replace("ICD10CM:", "")
-        self.icdFirstLetter = None if icd10 == None else icd10.replace("ICD10CM:", "")[0]
         self.hasIcd10 = icd10 != None
-        self.isControl = disease == "Control"
+        self.icd10 = None if not self.hasIcd10 else icd10.replace("ICD10CM:", "")
+        self.icdFirstLetter = None if not self.hasIcd10 else self.icd10[0]
+        self.isControl = disease == "control"
 
     def __repr__(self):
-        return f"Subject(subjectId={self.subjectId}, disease={self.disease}, icd10={self.icd10})"
+        return f"Subject(subjectId={self.subjectId}, disease={self.disease}, icd10={self.icd10} hasIcd10={self.hasIcd10} icdFirstLetter={self.icdFirstLetter} isControl={self.isControl})"
+        # return f"Subject(subjectId={self.subjectId}, disease={self.disease}, icd10={self.icd10})"
 
 
 def get_subjects(session):
