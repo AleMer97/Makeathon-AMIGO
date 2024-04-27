@@ -3,7 +3,7 @@ import time
 import os
 import logging
 from data_fetcher import DataFetcher
-from random_forest import randomForest
+from random_forest import randomForestA, randomForestB
 
 from neo4j import GraphDatabase, Query, Record
 from neo4j.exceptions import ServiceUnavailable
@@ -55,13 +55,15 @@ class ExecuteState(AppState):
                 
         data = [vars(obj) for obj in fetcher.subjects]
         df = pd.DataFrame(data)
-        df = df[['subjectId', 'isSick', 'phenotypes']]
+        df = df[['subjectId', 'isSick', 'icdFirstLetter', 'phenotypes']]
 
-        result = randomForest(df)
-        
-        logger.info(f"Results: {df}")
-        #print("test:" + result.csv())
-        result.to_csv(f"{OUTPUT_DIR}/results.csv", index=False)
+        resultA = randomForestA(df)
+        logger.info(f"Results Task A: {resultA}")
+        resultA.to_csv(f"{OUTPUT_DIR}/results_task_A.csv", index=False)
+
+        resultB = randomForestB(df)
+        logger.info(f"Results Task B: {resultB}")
+        resultB.to_csv(f"{OUTPUT_DIR}/results_task_B.csv", index=False)
 
         # Close the driver connection
         driver.close()
