@@ -35,7 +35,6 @@ dev-run: ## destroy -> build -> dev
 	make destroy
 	make build
 	make dev
-	
 
 destroy:
 	docker stop amigo
@@ -46,6 +45,13 @@ trigger:
 
 login:
 	docker login $(REGISTRY)
+
+fc-build:
+	featurecloud app build ./ $(DOCKER_IMAGE_NAME)-test latest True
+
+fc-test:
+	featurecloud test start --controller-host=http://localhost:8000 --app-image=$(DOCKER_IMAGE_NAME)-test \
+	--query-interval=1 --client-dirs=.,.
 
 help: ## This help dialog
 	@IFS=$$'\n' ; \
