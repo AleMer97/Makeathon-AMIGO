@@ -40,7 +40,10 @@ class ExecuteState(AppState):
         with driver.session(database=NEO4J_DB) as session:
                 
             # Example Query to Count Nodes 
-            node_count_query = "MATCH (n) RETURN count(n)"
+            node_count_query = """MATCH (b:Biological_sample)-->(d:Disease)
+WITH b,d,any(s in d.synonyms WHERE s STARTS WITH "ICD10CM") as icd10
+RETURN b, d.name, icd10, d.name = "control" as control LIMIT 1000
+"""
         
             # Use .data() to access the results array        
             results = session.run(node_count_query).data()
