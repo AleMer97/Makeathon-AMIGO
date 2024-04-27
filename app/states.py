@@ -46,7 +46,6 @@ class ExecuteState(AppState):
 
 
 
-            
             logger.info(subjects)
             
         write_output(f"{subjects}")
