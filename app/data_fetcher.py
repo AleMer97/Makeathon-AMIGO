@@ -4,9 +4,9 @@ class Subject:
         self.disease = disease
         self.hasIcd10 = icd10 != None
         self.icd10 = None if not self.hasIcd10 else icd10.replace("ICD10CM:", "")
-        self.icdFirstLetter = "" if not self.hasIcd10 else self.icd10[0]
         self.isControl = disease == "control"
         self.isSick = not self.isControl
+        self.icdFirstLetter = self.icd10[0] if self.hasIcd10 else ("CTL" if self.isControl else "NC")
         self.phenotypes = []
 
     def __repr__(self):
