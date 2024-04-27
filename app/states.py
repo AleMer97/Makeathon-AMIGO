@@ -41,11 +41,11 @@ class ExecuteState(AppState):
         with driver.session(database=NEO4J_DB) as session:
                 
             # Get All SubjectIds with respected diseases
-            subjects : get_subjectIds(session)
+            subjects : get_subjects(session)
 
 
 
-            
+
             # Use .data() to access the results array        
             results = session.run(node_count_query).data()
             logger.info(results)
