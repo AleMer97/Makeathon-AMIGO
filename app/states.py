@@ -61,11 +61,15 @@ class ExecuteState(AppState):
         df = pd.DataFrame(data)
         df = df[['subjectId', 'isSick', 'icdFirstLetter', 'phenotypes']]
 
-        resultA = randomForestA(df)
+        testdata = [vars(obj) for obj in validationFetcher.subjects]
+        testdf = pd.DataFrame(testdata)
+        testdf = testdf[['subjectId', 'phenotypes']]
+
+        resultA = randomForestA(df, testdf)
         logger.info(f"Results Task A: {resultA}")
         resultA.to_csv(f"{OUTPUT_DIR}/results_task_A.csv", index=False)
 
-        resultB = randomForestB(df)
+        resultB = randomForestB(df, testdf)
         logger.info(f"Results Task B: {resultB}")
         resultB.to_csv(f"{OUTPUT_DIR}/results_task_B.csv", index=False)
 
