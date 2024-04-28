@@ -2,7 +2,7 @@ from FeatureCloud.app.engine.app import AppState, app_state, Role
 import time
 import os
 import logging
-from data_fetcher import DataFetcher
+from data_fetcher import DataFetcher, ValidationDataFetcher
 from random_forest import randomForestA, randomForestB
 
 from neo4j import GraphDatabase, Query, Record
@@ -52,6 +52,10 @@ class ExecuteState(AppState):
             logger.info("Fetching data from Neo4j: ...")
             fetcher = DataFetcher(session)
             logger.info("Fetching data from Neo4j: Done")
+            
+            logger.info("Fetching validation data from Neo4j: ...")
+            validationFetcher = ValidationDataFetcher(session)
+            logger.info("Fetching validation data from Neo4j: Done")
                 
         data = [vars(obj) for obj in fetcher.subjects]
         df = pd.DataFrame(data)

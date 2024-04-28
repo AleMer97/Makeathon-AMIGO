@@ -11,6 +11,14 @@ class Subject:
 
     def __repr__(self):
         return f"Subject(subjectId={self.subjectId}, disease={self.disease}, icd10={self.icd10})"
+    
+class ValidationSubject:
+    def __init__(self, subjectId):
+        self.subjectId = subjectId
+        self.phenotypes = []
+
+    def __repr__(self):
+        return f"ValidationSubject(subjectId={self.subjectId})"
 
 class Phenotypes:
     def __init__(self, subjectId, phenotypes):
@@ -20,6 +28,14 @@ class Phenotypes:
     def __repr__(self):
         return f"Phenotypes(subjectId={self.subjectId}, phenotypes={self.phenotypes})"
     
+def get_phenotypes(session, subjectId):
+    query = """MATCH (a:Biological_sample {subjectid:\"""" + subjectId + """\"})-[:HAS_PHENOTYPE]->(p:Phenotype) 
+RETURN a.subjectid as subjectId, collect(p.id) as phenotypes"""
+    data = session.run(query).data()
+    if len(data) == 0:
+        return Phenotypes(subjectId=subjectId, phenotypes=[])
+    return Phenotypes(**data[0])
+    
 class DataFetcher:
     def __init__(self, session):
         self.session = session
@@ -28,7 +44,7 @@ class DataFetcher:
     def fetch(self):
         subjects = self.get_subjects(self.session)
         for subject in subjects:
-            subject.phenotypes = self.get_phenotypes(self.session, subject.subjectId).phenotypes
+            subject.phenotypes = get_phenotypes(self.session, subject.subjectId).phenotypes
         return subjects
 
     def get_subjects(self, session):
@@ -39,10 +55,22 @@ class DataFetcher:
         subjects = [Subject(**record) for record in data]
         return subjects
 
-    def get_phenotypes(self, session, subjectId):
-        query = """MATCH (a:Biological_sample {subjectid:\"""" + subjectId + """\"})-[:HAS_PHENOTYPE]->(p:Phenotype) 
-    RETURN a.subjectid as subjectId, collect(p.id) as phenotypes"""
+class ValidationDataFetcher:
+    def __init__(self, session):
+        self.session = session
+        self.subjects = self.fetch()
+    
+    def fetch(self):
+        subjects = self.get_subjects(self.session)
+        for subject in subjects:
+            subject.phenotypes = get_phenotypes(self.session, subject.subjectId).phenotypes
+        return subjects
+
+    def get_subjects(self, session):
+        query = """MATCH (b:Biological_sample)
+    WHERE NOT (b)-[:HAS_DISEASE]-(:Disease)
+    RETURN b.subjectid as subjectId"""     
         data = session.run(query).data()
-        if len(data) == 0:
-            return Phenotypes(subjectId=subjectId, phenotypes=[])
-        return Phenotypes(**data[0])
+        subjects = [ValidationSubject(**record) for record in data]
+        return subjects
+        
