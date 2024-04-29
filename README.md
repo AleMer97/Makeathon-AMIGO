@@ -1,3 +1,8 @@
+# ML 4 Hope
+
+On a lovely weekend in april 2024, our team participated at the TUM.ai Makeathon and came up with this proof of concept for the AMIGO challenge.
+
+
 # PersonalizedMedicine
 
 
