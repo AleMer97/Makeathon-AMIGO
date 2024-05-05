@@ -1,3 +1,6 @@
+# TUM.ai Makeathon 2024 submission
+We submitted this project as part of the Makeathon 2024. It should work "out-of-the-box" with featurecloud, but the code hasn't been cleaned since.
+
 # FeatureCloud App Blank Template
 
 The app-blank template contains an initial state that does not execute commands other than transitioning to the terminal state.
